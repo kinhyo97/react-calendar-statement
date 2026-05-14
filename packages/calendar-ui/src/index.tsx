@@ -1,4 +1,4 @@
-import { Bell, CalendarDays, ChevronLeft, ChevronRight, Loader2, LogOut, Plus, Search, Trash2, X } from "lucide-react";
+import { Bell, CalendarDays, ChevronLeft, ChevronRight, Loader2, LogOut, Moon, Plus, Search, Sun, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import type { AuthUser, CalendarCategory, CalendarEvent, CalendarFilter, EventFormValue, LoginInput, CategoryInput } from "@calendar/types";
 import {
@@ -27,7 +27,9 @@ export type CalendarScreenProps = {
   isLoading: boolean;
   isError: boolean;
   isSaving: boolean;
+  isDarkMode: boolean;
   onLogout: () => void;
+  onDarkModeToggle: () => void;
   onVisibleMonthChange: (date: Date) => void;
   onSelectedDateChange: (date: string) => void;
   onSelectedEventChange: (event: CalendarEvent | null) => void;
@@ -114,7 +116,9 @@ export function CalendarScreen({
   isLoading,
   isError,
   isSaving,
+  isDarkMode,
   onLogout,
+  onDarkModeToggle,
   onVisibleMonthChange,
   onSelectedDateChange,
   onSelectedEventChange,
@@ -175,7 +179,7 @@ export function CalendarScreen({
   };
 
   return (
-    <main className="appShell">
+    <main className={["appShell", isDarkMode ? "darkMode" : ""].join(" ")}>
       <section className="calendarFrame" aria-label={title}>
         <header className="appBar">
           <button type="button" className="brandButton" aria-label={title}>
@@ -188,6 +192,9 @@ export function CalendarScreen({
             </span>
           </div>
           <div className="appActions">
+            <button type="button" className="iconButton" aria-label={isDarkMode ? "라이트 모드" : "다크 모드"} onClick={onDarkModeToggle}>
+              {isDarkMode ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
             <button type="button" className="iconButton alertButton" aria-label="알림">
               <Bell size={18} />
             </button>

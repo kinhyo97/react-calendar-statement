@@ -52,6 +52,7 @@ textarea {
 .appShell {
   min-height: 100vh;
   padding: 28px;
+  background: #eef2f7;
 }
 
 .loginShell {
@@ -681,6 +682,88 @@ textarea {
 
 .modalActions > button:first-child {
   border: 1px solid #dce3ee;
+}
+
+.darkMode {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.darkMode .calendarFrame,
+.darkMode .modal {
+  border-color: #2f3b52;
+  background: #172033;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
+}
+
+.darkMode .appBar,
+.darkMode .monthPanel,
+.darkMode .categoryEditor,
+.darkMode .eventCard,
+.darkMode .modalActions > button:first-child {
+  border-color: #2f3b52;
+}
+
+.darkMode .agendaPanel,
+.darkMode .weekday {
+  background: #121a2a;
+}
+
+.darkMode .calendarBoard,
+.darkMode .weekRow {
+  border-color: #2f3b52;
+  background: #2f3b52;
+}
+
+.darkMode .dayCell,
+.darkMode input,
+.darkMode select,
+.darkMode textarea,
+.darkMode .searchBox,
+.darkMode .eventCard {
+  border-color: #344058;
+  background: #1e293f;
+  color: #e5e7eb;
+}
+
+.darkMode .dayCell:hover {
+  background: #25324a;
+}
+
+.darkMode .mutedDay {
+  background: #182236;
+}
+
+.darkMode .brandButton,
+.darkMode .todayButton,
+.darkMode .iconButton:hover,
+.darkMode .addButton:hover {
+  border-color: #344058;
+  background: #24324d;
+}
+
+.darkMode .monthHeading span,
+.darkMode .agendaHeader span,
+.darkMode .eventContent small,
+.darkMode .emptyText,
+.darkMode .searchBox,
+.darkMode .moreEvents,
+.darkMode .weekday,
+.darkMode .mutedDay .dayNumber {
+  color: #9aa7ba;
+}
+
+.darkMode .monthHeading strong,
+.darkMode .agendaHeader strong,
+.darkMode .categoryEditor h3,
+.darkMode .dayNumber,
+.darkMode .iconButton {
+  color: #e5e7eb;
+}
+
+.darkMode .today:not(.selectedDay) .dayNumber {
+  background: #243f66;
+  color: #8ec5ff;
 }
 
 @media (max-width: 980px) {

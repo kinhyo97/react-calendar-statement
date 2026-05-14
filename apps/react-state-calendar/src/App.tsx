@@ -13,6 +13,7 @@ export function App() {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [filter, setFilter] = useState<CalendarFilter>({ query: "", categoryId: "all" });
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [form, setForm] = useState<EventFormValue>(() => createEmptyForm());
 
   if (!auth.user) {
@@ -35,7 +36,9 @@ export function App() {
       isLoading={calendarEvents.isLoading || calendarCategories.isLoading}
       isError={calendarEvents.isError || calendarCategories.isError}
       isSaving={calendarEvents.isSaving || calendarCategories.isSaving}
+      isDarkMode={isDarkMode}
       onLogout={auth.logout}
+      onDarkModeToggle={() => setIsDarkMode((value) => !value)}
       onVisibleMonthChange={setVisibleMonth}
       onSelectedDateChange={setSelectedDate}
       onSelectedEventChange={setSelectedEvent}
