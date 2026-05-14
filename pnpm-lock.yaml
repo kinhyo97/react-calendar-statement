@@ -128,6 +128,24 @@ importers:
 
   apps/recoil-calendar:
     dependencies:
+      '@calendar/api':
+        specifier: workspace:*
+        version: link:../../packages/calendar-api
+      '@calendar/types':
+        specifier: workspace:*
+        version: link:../../packages/calendar-types
+      '@calendar/ui':
+        specifier: workspace:*
+        version: link:../../packages/calendar-ui
+      '@calendar/utils':
+        specifier: workspace:*
+        version: link:../../packages/calendar-utils
+      '@tanstack/react-query':
+        specifier: ^5.62.8
+        version: 5.100.10(react@18.3.1)
+      lucide-react:
+        specifier: ^0.468.0
+        version: 0.468.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -150,9 +168,27 @@ importers:
 
   apps/redux-toolkit-calendar:
     dependencies:
+      '@calendar/api':
+        specifier: workspace:*
+        version: link:../../packages/calendar-api
+      '@calendar/types':
+        specifier: workspace:*
+        version: link:../../packages/calendar-types
+      '@calendar/ui':
+        specifier: workspace:*
+        version: link:../../packages/calendar-ui
+      '@calendar/utils':
+        specifier: workspace:*
+        version: link:../../packages/calendar-utils
       '@reduxjs/toolkit':
         specifier: ^2.5.0
         version: 2.11.2(react-redux@9.2.0(@types/react@18.3.28)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
+      '@tanstack/react-query':
+        specifier: ^5.62.8
+        version: 5.100.10(react@18.3.1)
+      lucide-react:
+        specifier: ^0.468.0
+        version: 0.468.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -175,6 +211,24 @@ importers:
 
   apps/zustand-calendar:
     dependencies:
+      '@calendar/api':
+        specifier: workspace:*
+        version: link:../../packages/calendar-api
+      '@calendar/types':
+        specifier: workspace:*
+        version: link:../../packages/calendar-types
+      '@calendar/ui':
+        specifier: workspace:*
+        version: link:../../packages/calendar-ui
+      '@calendar/utils':
+        specifier: workspace:*
+        version: link:../../packages/calendar-utils
+      '@tanstack/react-query':
+        specifier: ^5.62.8
+        version: 5.100.10(react@18.3.1)
+      lucide-react:
+        specifier: ^0.468.0
+        version: 0.468.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1

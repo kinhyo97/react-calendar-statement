@@ -5,11 +5,11 @@ Same calendar app, five client-state approaches, one server-state layer.
 ## Apps
 
 - `api-server`: local API server with token auth, user-scoped events, and editable categories
-- `apps/react-state-calendar`: React local state + TanStack Query calendar implementation
-- `apps/zustand-calendar`: Zustand starter
-- `apps/jotai-calendar`: Jotai starter
-- `apps/recoil-calendar`: Recoil starter
-- `apps/redux-toolkit-calendar`: Redux Toolkit starter
+- `apps/react-state-calendar`: React local state + TanStack Query
+- `apps/zustand-calendar`: Zustand + TanStack Query
+- `apps/jotai-calendar`: Jotai + TanStack Query
+- `apps/recoil-calendar`: Recoil + TanStack Query
+- `apps/redux-toolkit-calendar`: Redux Toolkit + TanStack Query
 
 ## Shared Packages
 
