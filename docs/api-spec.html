@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar API Spec</title>
+    <style>
+      :root {
+        color: #1f2937;
+        background: #f5f7fb;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        width: min(960px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: 34px;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin-top: 36px;
+        border-bottom: 1px solid #dfe5ef;
+        padding-bottom: 10px;
+        font-size: 22px;
+      }
+
+      h3 {
+        font-size: 17px;
+      }
+
+      .summary,
+      .endpoint,
+      table {
+        border: 1px solid #dfe5ef;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 32px rgb(31 41 55 / 6%);
+      }
+
+      .summary,
+      .endpoint {
+        padding: 20px;
+      }
+
+      .summary {
+        display: grid;
+        gap: 8px;
+      }
+
+      .endpoint {
+        margin: 16px 0;
+      }
+
+      .route {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .method {
+        border-radius: 6px;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 5px 8px;
+      }
+
+      .get {
+        background: #2563eb;
+      }
+
+      .post {
+        background: #16875d;
+      }
+
+      .put {
+        background: #b76b00;
+      }
+
+      .delete {
+        background: #c92f2f;
+      }
+
+      code,
+      pre {
+        border-radius: 8px;
+        background: #111827;
+        color: #f9fafb;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      code {
+        padding: 2px 5px;
+      }
+
+      pre {
+        overflow: auto;
+        padding: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #edf1f6;
+        padding: 12px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: #f0f4fa;
+        font-size: 13px;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Calendar API Spec</h1>
+      <section class="summary">
+        <p><strong>Base URL:</strong> <code>http://localhost:4000</code></p>
+        <p><strong>Auth:</strong> Bearer token. Login response token is stored by the frontend in localStorage.</p>
+        <p><strong>Database:</strong> SQLite file at <code>api-server/data/calendar.db</code>.</p>
+      </section>
+
+      <h2>Data Models</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Shape</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AuthUser</td>
+            <td><code>{ id: string, email: string, name: string }</code></td>
+          </tr>
+          <tr>
+            <td>AuthSession</td>
+            <td><code>{ token: string, user: AuthUser }</code></td>
+          </tr>
+          <tr>
+            <td>CalendarEvent</td>
+            <td><code>{ id: string, userId: string, title: string, startDate: string, endDate: string, categoryId: string, memo?: string }</code></td>
+          </tr>
+          <tr>
+            <td>EventInput</td>
+            <td><code>{ title: string, startDate: "YYYY-MM-DD", endDate: "YYYY-MM-DD", categoryId: string, memo?: string }</code></td>
+          </tr>
+          <tr>
+            <td>CalendarCategory</td>
+            <td><code>{ id: string, userId: string, name: string, color: "#RRGGBB" }</code></td>
+          </tr>
+          <tr>
+            <td>CategoryInput</td>
+            <td><code>{ name: string, color: "#RRGGBB" }</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Authentication</h2>
+      <section class="endpoint">
+        <div class="route"><span class="method post">POST</span><code>/auth/login</code></div>
+        <p>Logs in an existing user. If the email does not exist, a local user is created.</p>
+        <h3>Request</h3>
+        <pre>{
+  "email": "demo@example.com",
+  "password": "password"
+}</pre>
+        <h3>Response 200</h3>
+        <pre>{
+  "token": "uuid-token",
+  "user": {
+    "id": "uuid-user",
+    "email": "demo@example.com",
+    "name": "demo"
+  }
+}</pre>
+      </section>
+
+      <section class="endpoint">
+        <div class="route"><span class="method post">POST</span><code>/auth/logout</code></div>
+        <p>Deletes the current session token.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Response 200</h3>
+        <pre>{ "ok": true }</pre>
+      </section>
+
+      <section class="endpoint">
+        <div class="route"><span class="method get">GET</span><code>/me</code></div>
+        <p>Returns the authenticated user for the bearer token.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Response 200</h3>
+        <pre>{
+  "id": "uuid-user",
+  "email": "demo@example.com",
+  "name": "demo"
+}</pre>
+      </section>
+
+      <h2>Categories</h2>
+      <section class="endpoint">
+        <div class="route"><span class="method get">GET</span><code>/categories</code></div>
+        <p>Returns editable categories owned by the authenticated user. Default categories are created automatically.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Response 200</h3>
+        <pre>[
+  {
+    "id": "work",
+    "userId": "uuid-user",
+    "name": "업무",
+    "color": "#2f8fe9"
+  }
+]</pre>
+      </section>
+
+      <section class="endpoint">
+        <div class="route"><span class="method put">PUT</span><code>/categories/:id</code></div>
+        <p>Updates a category name or color for the authenticated user.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Request</h3>
+        <pre>{
+  "name": "회사",
+  "color": "#2563eb"
+}</pre>
+      </section>
+
+      <h2>Events</h2>
+      <section class="endpoint">
+        <div class="route"><span class="method get">GET</span><code>/events</code></div>
+        <p>Returns events owned by the authenticated user, sorted by date.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Response 200</h3>
+        <pre>[
+  {
+    "id": "uuid-event",
+    "userId": "uuid-user",
+    "title": "프로젝트 회의",
+    "startDate": "2026-05-16",
+    "endDate": "2026-05-18",
+    "categoryId": "work",
+    "memo": "상태관리 비교"
+  }
+]</pre>
+      </section>
+
+      <section class="endpoint">
+        <div class="route"><span class="method post">POST</span><code>/events</code></div>
+        <p>Creates an event for the authenticated user.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Request</h3>
+        <pre>{
+  "title": "프로젝트 회의",
+  "startDate": "2026-05-16",
+  "endDate": "2026-05-18",
+  "categoryId": "work",
+  "memo": "상태관리 비교"
+}</pre>
+        <h3>Response 201</h3>
+        <pre>{
+  "id": "uuid-event",
+  "userId": "uuid-user",
+  "title": "프로젝트 회의",
+  "startDate": "2026-05-16",
+  "endDate": "2026-05-18",
+  "categoryId": "work",
+  "memo": "상태관리 비교"
+}</pre>
+      </section>
+
+      <section class="endpoint">
+        <div class="route"><span class="method put">PUT</span><code>/events/:id</code></div>
+        <p>Updates an event owned by the authenticated user.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Request</h3>
+        <pre>{
+  "title": "수정된 일정",
+  "startDate": "2026-05-17",
+  "endDate": "2026-05-20",
+  "categoryId": "study",
+  "memo": "TanStack Query mutation"
+}</pre>
+      </section>
+
+      <section class="endpoint">
+        <div class="route"><span class="method delete">DELETE</span><code>/events/:id</code></div>
+        <p>Deletes an event owned by the authenticated user.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Response 200</h3>
+        <pre>{ "id": "uuid-event" }</pre>
+      </section>
+
+      <h2>Error Responses</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>400</td>
+            <td>Invalid request body.</td>
+          </tr>
+          <tr>
+            <td>401</td>
+            <td>Missing token, invalid token, or wrong password.</td>
+          </tr>
+          <tr>
+            <td>404</td>
+            <td>Route or event not found.</td>
+          </tr>
+          <tr>
+            <td>500</td>
+            <td>Unexpected server error.</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>

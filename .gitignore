@@ -1,0 +1,11 @@
+node_modules
+dist
+.turbo
+.api-server-logs
+.turbo-dev-logs
+.env
+.env.local
+*.log
+api-server/data
+api-server/src/**/*.js
+apps/api-server
