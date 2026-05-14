@@ -42,6 +42,7 @@ export function App() {
       onFilterChange={setFilter}
       onFormOpenChange={setIsFormOpen}
       onFormChange={setForm}
+      onCategoryCreate={(category) => calendarCategories.createCategory(category)}
       onCategoryChange={(category) => calendarCategories.updateCategory(category)}
       onCreateEvent={(event) => calendarEvents.createEvent(event)}
       onUpdateEvent={(event) => calendarEvents.updateEvent(event)}

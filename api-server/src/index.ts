@@ -293,6 +293,20 @@ const isCategoryInput = (value: Partial<CategoryInput>): value is CategoryInput 
 const normalizeEventInput = (input: EventInput): EventInput =>
   input.startDate <= input.endDate ? input : { ...input, startDate: input.endDate, endDate: input.startDate };
 
+const normalizeCategoryInput = (input: CategoryInput): CategoryInput | null => {
+  const name = input.name.trim();
+  const color = input.color.trim();
+
+  if (!name || !/^#[0-9a-fA-F]{6}$/.test(color)) {
+    return null;
+  }
+
+  return { name, color };
+};
+
+const legacyCategoryValue = (categoryId: string) =>
+  ["work", "personal", "study", "etc"].includes(categoryId) ? categoryId : "etc";
+
 const defaultCategories = (userId: string): CalendarCategory[] => [
   { id: "work", userId, name: "업무", color: "#2f8fe9" },
   { id: "personal", userId, name: "개인", color: "#22aa89" },
@@ -376,7 +390,7 @@ const insertEvent = (db: SqlDatabase, event: CalendarEvent) => {
         event.startDate,
         event.startDate,
         event.endDate,
-        event.categoryId,
+        legacyCategoryValue(event.categoryId),
         event.categoryId,
         event.memo ?? null
       ]
@@ -530,6 +544,33 @@ const server = createServer(async (request, response) => {
         json(response, 200, rows.map(categoryFromRow));
         return;
       }
+
+      if (request.method === "POST") {
+        const input = await readBody<CategoryInput>(request);
+        if (!isCategoryInput(input)) {
+          json(response, 400, { message: "카테고리 입력값을 확인하세요." });
+          return;
+        }
+
+        const normalizedInput = normalizeCategoryInput(input);
+        if (!normalizedInput) {
+          json(response, 400, { message: "카테고리 이름과 색상을 확인하세요." });
+          return;
+        }
+
+        const category: CalendarCategory = {
+          id: randomUUID(),
+          userId: auth.user.id,
+          name: normalizedInput.name,
+          color: normalizedInput.color
+        };
+
+        insertCategory(auth.db, category);
+        await closeAuth(auth, true);
+        auth = null;
+        json(response, 201, category);
+        return;
+      }
     }
 
     const categoryMatch = url.pathname.match(/^\/categories\/([^/]+)$/);
@@ -559,10 +600,8 @@ const server = createServer(async (request, response) => {
           return;
         }
 
-        const color = input.color.trim();
-        const name = input.name.trim();
-
-        if (!name || !/^#[0-9a-fA-F]{6}$/.test(color)) {
+        const normalizedInput = normalizeCategoryInput(input);
+        if (!normalizedInput) {
           json(response, 400, { message: "카테고리 이름과 색상을 확인하세요." });
           return;
         }
@@ -573,11 +612,11 @@ const server = createServer(async (request, response) => {
             SET name = ?, color = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ? AND user_id = ?
           `,
-          [name, color, categoryId, auth.user.id]
+          [normalizedInput.name, normalizedInput.color, categoryId, auth.user.id]
         );
         await closeAuth(auth, true);
         auth = null;
-        json(response, 200, { id: categoryId, userId: category.user_id, name, color });
+        json(response, 200, { id: categoryId, userId: category.user_id, ...normalizedInput });
         return;
       }
     }
@@ -702,7 +741,7 @@ const server = createServer(async (request, response) => {
               event.startDate,
               event.startDate,
               event.endDate,
-              event.categoryId,
+              legacyCategoryValue(event.categoryId),
               event.categoryId,
               event.memo ?? null,
               event.id,

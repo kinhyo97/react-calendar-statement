@@ -535,6 +535,29 @@ textarea {
   align-items: center;
 }
 
+.categoryCreateRow {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  gap: 8px;
+  align-items: center;
+}
+
+.categoryAddButton {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #2176e8;
+  border-radius: 8px;
+  background: #2176e8;
+  color: #ffffff;
+}
+
+.categoryAddButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .colorInput {
   width: 40px;
   min-height: 40px;

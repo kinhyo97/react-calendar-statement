@@ -246,6 +246,25 @@
       </section>
 
       <section class="endpoint">
+        <div class="route"><span class="method post">POST</span><code>/categories</code></div>
+        <p>Creates a category for the authenticated user.</p>
+        <h3>Headers</h3>
+        <pre>Authorization: Bearer &lt;token&gt;</pre>
+        <h3>Request</h3>
+        <pre>{
+  "name": "운동",
+  "color": "#16a34a"
+}</pre>
+        <h3>Response 201</h3>
+        <pre>{
+  "id": "uuid-category",
+  "userId": "uuid-user",
+  "name": "운동",
+  "color": "#16a34a"
+}</pre>
+      </section>
+
+      <section class="endpoint">
         <div class="route"><span class="method put">PUT</span><code>/categories/:id</code></div>
         <p>Updates a category name or color for the authenticated user.</p>
         <h3>Headers</h3>

@@ -81,6 +81,13 @@ export const listEvents = (token: string) => request<CalendarEvent[]>("/events",
 
 export const listCategories = (token: string) => request<CalendarCategory[]>("/categories", { token });
 
+export const createCategory = (token: string, input: CategoryInput) =>
+  request<CalendarCategory>("/categories", {
+    method: "POST",
+    token,
+    body: JSON.stringify(input)
+  });
+
 export const updateCategory = (token: string, category: CalendarCategory) =>
   request<CalendarCategory>(`/categories/${category.id}`, {
     method: "PUT",
@@ -230,6 +237,13 @@ export const useCalendarCategories = (token: string | null) => {
     enabled: Boolean(token)
   });
 
+  const createMutation = useMutation({
+    mutationFn: (input: CategoryInput) => createCategory(token!, input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey });
+    }
+  });
+
   const updateMutation = useMutation({
     mutationFn: (category: CalendarCategory) => updateCategory(token!, category),
     onSuccess: () => {
@@ -242,7 +256,8 @@ export const useCalendarCategories = (token: string | null) => {
     categories: categoriesQuery.data ?? [],
     isLoading: categoriesQuery.isLoading,
     isError: categoriesQuery.isError,
+    createCategory: createMutation.mutate,
     updateCategory: updateMutation.mutate,
-    isSaving: updateMutation.isPending
+    isSaving: createMutation.isPending || updateMutation.isPending
   };
 };

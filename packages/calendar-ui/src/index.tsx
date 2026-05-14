@@ -1,6 +1,6 @@
 import { Bell, CalendarDays, ChevronLeft, ChevronRight, Loader2, LogOut, Plus, Search, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import type { AuthUser, CalendarCategory, CalendarEvent, CalendarFilter, EventFormValue, LoginInput } from "@calendar/types";
+import type { AuthUser, CalendarCategory, CalendarEvent, CalendarFilter, EventFormValue, LoginInput, CategoryInput } from "@calendar/types";
 import {
   addMonths,
   createMonthWeeks,
@@ -34,6 +34,7 @@ export type CalendarScreenProps = {
   onFilterChange: (filter: CalendarFilter) => void;
   onFormOpenChange: (open: boolean) => void;
   onFormChange: (form: EventFormValue) => void;
+  onCategoryCreate: (category: CategoryInput) => void;
   onCategoryChange: (category: CalendarCategory) => void;
   onCreateEvent: (event: EventFormValue) => void;
   onUpdateEvent: (event: CalendarEvent) => void;
@@ -120,11 +121,13 @@ export function CalendarScreen({
   onFilterChange,
   onFormOpenChange,
   onFormChange,
+  onCategoryCreate,
   onCategoryChange,
   onCreateEvent,
   onUpdateEvent,
   onDeleteEvent
 }: CalendarScreenProps) {
+  const [newCategory, setNewCategory] = useState<CategoryInput>({ name: "", color: "#2176e8" });
   const categoryOptions = [{ id: "all", name: "전체", color: "#6f798a", userId: user.id }, ...categories];
   const categoryMap = new Map(categories.map((category) => [category.id, category]));
   const filteredEvents = filterEvents(events, filter);
@@ -159,6 +162,16 @@ export function CalendarScreen({
     }
 
     onFormOpenChange(false);
+  };
+
+  const handleCreateCategory = () => {
+    const name = newCategory.name.trim();
+    if (!name) {
+      return;
+    }
+
+    onCategoryCreate({ name, color: newCategory.color });
+    setNewCategory({ name: "", color: "#2176e8" });
   };
 
   return (
@@ -333,6 +346,29 @@ export function CalendarScreen({
           </div>
           <div className="categoryEditor">
             <h3>카테고리</h3>
+            <div className="categoryCreateRow">
+              <input
+                aria-label="새 카테고리 색상"
+                className="colorInput"
+                type="color"
+                value={newCategory.color}
+                onChange={(event) => setNewCategory({ ...newCategory, color: event.target.value })}
+              />
+              <input
+                aria-label="새 카테고리 이름"
+                placeholder="새 카테고리"
+                value={newCategory.name}
+                onChange={(event) => setNewCategory({ ...newCategory, name: event.target.value })}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleCreateCategory();
+                  }
+                }}
+              />
+              <button className="categoryAddButton" type="button" disabled={isSaving || !newCategory.name.trim()} onClick={handleCreateCategory}>
+                <Plus size={16} />
+              </button>
+            </div>
             {categories.map((category) => (
               <div className="categoryEditorRow" key={category.id}>
                 <input
