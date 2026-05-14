@@ -51,9 +51,27 @@ importers:
 
   apps/jotai-calendar:
     dependencies:
+      '@calendar/api':
+        specifier: workspace:*
+        version: link:../../packages/calendar-api
+      '@calendar/types':
+        specifier: workspace:*
+        version: link:../../packages/calendar-types
+      '@calendar/ui':
+        specifier: workspace:*
+        version: link:../../packages/calendar-ui
+      '@calendar/utils':
+        specifier: workspace:*
+        version: link:../../packages/calendar-utils
+      '@tanstack/react-query':
+        specifier: ^5.62.8
+        version: 5.100.10(react@18.3.1)
       jotai:
         specifier: ^2.10.3
         version: 2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@18.3.28)(react@18.3.1)
+      lucide-react:
+        specifier: ^0.468.0
+        version: 0.468.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
